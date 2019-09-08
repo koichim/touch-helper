@@ -32,7 +32,7 @@ ContextMenus.setItems([
         title: 'show touch helper buttons',
         type: 'checkbox',
 		checked: true,
-		contexts: ['page'],
+		contexts: ['all'],
         onclick: show_hide_touch_helper_buttons
     }
 ]);
