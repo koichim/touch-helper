@@ -356,7 +356,7 @@ $(function() {
 
     var process_sequence_map = {
 	"l"   : {str: "go back",          func: do_go_back},
-	"r"   : {str: "go back",          func: do_go_forward},
+	"r"   : {str: "go forward",       func: do_go_forward},
 	"d"   : {str: "open link",        func: do_open_link_in_background},
 	"u"   : {str: "open secret link", func: do_open_links_in_secret_background},
 	"ud"  : {str: "reload",           func: do_reload},
