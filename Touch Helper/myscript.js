@@ -80,8 +80,9 @@ $(function() {
 	    url.match("https://drive.google.com/") ||
 	    url.match("https://photos.google.com/") ||
 	    (url.match("https://www.google.com/") && path.match(/^\/maps\//)) ||
-	    url.match("https://mail.google.com/") ||
-	    url.match("https://news.google.com/")) {
+	    url.match("https://mail.google.com/")
+	//	url.match("https://news.google.com/")
+		) {
 	    scroll_support = false;
 	}
 	return;
