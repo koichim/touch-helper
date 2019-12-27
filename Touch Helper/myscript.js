@@ -12,6 +12,7 @@ $(function() {
     var DEBUG = 0;
 
     var show_buttons = true;
+    var show_scrollbar = true;
     var scroll_support = true;
     var scroll_element = null;
 
@@ -740,27 +741,46 @@ $(function() {
 	    if(typeof chrome!=='undefined' &&
 	       typeof chrome.app!=='undefined' &&
 	       typeof chrome.app.isInstalled!=='undefined'){
-		chrome.storage.local.get('show_tap_buttons', function (value) {
-		    show_buttons = value.show_tap_buttons;
-		});
+			chrome.storage.local.get('show_tap_buttons', function (value) {
+		    	show_buttons = value.show_tap_buttons;
+			});
 	    }
 	    set_scroll_element();
-            if (show_buttons && !document.getElementById(TAP_BUTTON_ID)) {
-                add_tap_buttons();
-            }
+        if (show_buttons && !document.getElementById(TAP_BUTTON_ID)) {
+            add_tap_buttons();
+        }
 	    if (!show_buttons && document.getElementById(TAP_BUTTON_ID)) {
-		$("#"+TAP_BUTTON_ID).remove();
-	    }
+			$("#"+TAP_BUTTON_ID).remove();
+		}
+		
+		if(typeof chrome!=='undefined' &&
+		   typeof chrome.app!=='undefined' &&
+		   typeof chrome.app.isInstalled!=='undefined'){
+			chrome.storage.local.get('show_scrollbar', function (value) {
+				var scrollbar_display = "none";
+				if (value.show_scrollbar) {
+					scrollbar_display = "initial"
+				}
+				var scrollbar_style_inner = "::-webkit-scrollbar{display:"+scrollbar_display+";}";
+				var scrollbar_style = "<style id=\"show_scrollbar\">"+scrollbar_style_inner+"</style>";
+				if (!$("#show_scrollbar")[0]){
+					$("head").append(scrollbar_style);
+				 } else {
+					$("#show_scrollbar").html(scrollbar_style_inner);
+				 }
+			 });
+		 }
+
 	    var date = new Date();
-	    if (wait_gesture && touch_start_timestamp != 0 && 
-		date.getTime() - touch_start_timestamp > GESTURE_START_HOLD_OFF_TIME) {
-		console.log("touch gesture start at "+date.getTime());
-		wait_gesture = false;
-		in_gesture = true;
-		$(window).unbind("touchmove" , TouchMove);
-		window.addEventListener('touchmove', TouchMoveWithGesture, {passive: false});
-		add_gesture_info();
-		update_gesture_info(prev_pos);
+		if (wait_gesture && touch_start_timestamp != 0 && 
+			date.getTime() - touch_start_timestamp > GESTURE_START_HOLD_OFF_TIME) {
+			console.log("touch gesture start at "+date.getTime());
+			wait_gesture = false;
+			in_gesture = true;
+			$(window).unbind("touchmove" , TouchMove);
+			window.addEventListener('touchmove', TouchMoveWithGesture, {passive: false});
+			add_gesture_info();
+			update_gesture_info(prev_pos);
 	    }
 //	    if (sequence != "" &&
 //		date.getTime() - newest_event_timestamp > (CHECK_INTERVAL/2)) {

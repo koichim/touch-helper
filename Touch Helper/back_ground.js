@@ -34,6 +34,14 @@ ContextMenus.setItems([
 		checked: true,
 		contexts: ['all'],
         onclick: show_hide_touch_helper_buttons
+	},
+	{
+        id: 'touch helper scrollbar',
+        title: 'show scrollbar',
+        type: 'checkbox',
+		checked: true,
+		contexts: ['all'],
+        onclick: show_hide_scrollbar
     }
 ]);
 
@@ -44,6 +52,13 @@ function show_hide_touch_helper_buttons(info, tab){
 	chrome.storage.local.set({'show_tap_buttons': true}, function () {});
     } else {
 	chrome.storage.local.set({'show_tap_buttons': false}, function () {});
+    }
+}
+function show_hide_scrollbar(info, tab){
+    if (info.checked) {
+	chrome.storage.local.set({'show_scrollbar': true}, function () {});
+    } else {
+	chrome.storage.local.set({'show_scrollbar': false}, function () {});
     }
 }
 
