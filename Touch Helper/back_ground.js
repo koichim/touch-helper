@@ -26,24 +26,32 @@ var ContextMenus = new function () {
     });
 };
 
-ContextMenus.setItems([
-    {
-        id: 'touch helper buttons',
-        title: 'show touch helper buttons',
-        type: 'checkbox',
-		checked: true,
-		contexts: ['all'],
-        onclick: show_hide_touch_helper_buttons
-	},
-	{
-        id: 'touch helper scrollbar',
-        title: 'show scrollbar',
-        type: 'checkbox',
-		checked: true,
-		contexts: ['all'],
-        onclick: show_hide_scrollbar
-    }
-]);
+
+chrome.storage.local.get('show_tap_buttons', function (value) {
+	ContextMenus.setItems([
+		{
+			id: 'touch helper buttons',
+			title: 'show touch helper buttons',
+			type: 'checkbox',
+			checked: value.show_tap_buttons,
+			contexts: ['all'],
+			onclick: show_hide_touch_helper_buttons
+		}
+	]);
+});
+chrome.storage.local.get('show_scrollbar', function (value) {
+	ContextMenus.setItems([
+		{
+			id: 'touch helper scrollbar',
+			title: 'show scrollbar',
+			type: 'checkbox',
+			checked: value.show_scrollbar,
+			contexts: ['all'],
+			onclick: show_hide_scrollbar
+		}
+	]);
+});
+
 
 chrome.runtime.onInstalled.addListener(ContextMenus.create);
     

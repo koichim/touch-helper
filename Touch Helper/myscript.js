@@ -757,16 +757,17 @@ $(function() {
 		   typeof chrome.app!=='undefined' &&
 		   typeof chrome.app.isInstalled!=='undefined'){
 			chrome.storage.local.get('show_scrollbar', function (value) {
-				var scrollbar_display = "none";
 				if (value.show_scrollbar) {
-					scrollbar_display = "initial"
-				}
-				var scrollbar_style_inner = "::-webkit-scrollbar{display:"+scrollbar_display+";}";
-				var scrollbar_style = "<style id=\"show_scrollbar\">"+scrollbar_style_inner+"</style>";
-				if (!$("#show_scrollbar")[0]){
+					//scrollbar_display = "initial"
+					if ($("#masuda_scrollbar")[0]){
+						$("#masuda_scrollbar").remove();
+					}
+				} else if (!$("#masuda_scrollbar")[0]){
+					var scrollbar_style_inner = "::-webkit-scrollbar{display:none;}";
+					//var scrollbar_style_inner = "::-webkit-scrollbar-track-piece{display:none;}";
+					//var scrollbar_style_inner = "::-webkit-scrollbar{pointer-events:none;}";
+					var scrollbar_style = "<style id=\"masuda_scrollbar\">"+scrollbar_style_inner+"</style>";
 					$("head").append(scrollbar_style);
-				 } else {
-					$("#show_scrollbar").html(scrollbar_style_inner);
 				 }
 			 });
 		 }
