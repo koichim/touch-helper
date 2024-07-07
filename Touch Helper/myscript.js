@@ -491,10 +491,39 @@ $(function () {
 		});
 	*/
 
+	var mouseRunning = False;
+	var touchRunning = False;
+	$(window).bind("mousedown", MouseStart);
+	$(window).bind("mouseup", MouseLeave);
+	
+	function MouseStart(event){
+		if (event.button != 2) {return;}
+		// right button
+		mouseRunning = True;
+		TouchOrMouseStart(event);
+		$(window).bind("mousemove", TouchOrMouseMove);
+	}
+	function MouseLeave(event){
+		if (event.button != 2) {return;}
+		// right button
+		mouseRunning = False;
+		TouchOrMouseLeave(event);
+	}
+
 	$(window).bind("touchstart", TouchStart);
 	$(window).bind("touchend", TouchLeave);
 
-	function TouchStart(event) {
+	function TouchStart(event){
+		touchRunning = True;
+		TouchOrMouseStart(event);
+		$(window).bind("touchmove", TouchOrMouseMove);
+	}
+	function TouchLeave(event){
+		touchRunning = False;
+		TouchOrMouseLeave(event);
+	}
+
+	function TouchOrMouseStart(event) {
 		prev_moving = "";
 		prev_pos = get_position(event);
 		prev_pos_line = get_client_position(event);
@@ -506,8 +535,7 @@ $(function () {
 		cur_link = $(event.target).closest('a').prop('href');
 		cur_links.length = 0;
 		console.log("cur_link=" + cur_link);
-		$(window).bind("touchmove", TouchMove);
-
+		//$(window).bind("touchmove", TouchMove);
 	}
 
 	function add_cur_links(link_url) {
@@ -522,7 +550,7 @@ $(function () {
 	}
 
 
-	function TouchMove(event) {
+	function TouchOrMouseMove(event) {
 
 		var pos_line = get_client_position(event);
 		var dist_x = pos_line.x - prev_pos_line.x;
@@ -531,11 +559,9 @@ $(function () {
 			// not in gesture mode
 			wait_gesture = false;
 		}
-
-
 	}
 
-	function TouchMoveWithGesture(event) {
+	function TouchOrMouseMoveWithGesture(event) {
 
 		if (!in_gesture) { return; }
 
@@ -599,11 +625,12 @@ $(function () {
 
 	}
 
-	function TouchLeave(event) {
+	function TouchOrMouseLeave(event) {
 		//	$(window).off('.noScroll'); // reactivate scroll
 		if (in_gesture) {
 			console.log("end touch gesture");
-			window.removeEventListener('touchmove', TouchMoveWithGesture);
+			if (touchRunning) {window.removeEventListener('touchmove', TouchMoveWithGesture);}
+			if (mouseRunning) {window.removeEventListener('mousemove', TouchMoveWithGesture);}
 			process_sequence();
 			//	    $("."+PATH_LINE_CSS_NAME).remove();
 			clear_path_line();
@@ -785,8 +812,14 @@ $(function () {
 				console.log("touch gesture start at " + date.getTime());
 				wait_gesture = false;
 				in_gesture = true;
-				$(window).unbind("touchmove", TouchMove);
-				window.addEventListener('touchmove', TouchMoveWithGesture, { passive: false });
+				if (mouseRunning) {
+					$(window).unbind("mousemove", TouchOrMouseMove);
+					window.addEventListener('mousemove', TouchOrMouseMoveWithGesture, { passive: false });
+				}
+				if (touchRunning) {
+					$(window).unbind("touchmove", TouchOrMouseMove);
+					window.addEventListener('touchmove', TouchOrMouseMoveWithGesture, { passive: false });
+				}
 				add_gesture_info();
 				update_gesture_info(prev_pos);
 			}
