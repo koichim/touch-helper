@@ -766,9 +766,7 @@ $(function () {
 
 	var interval_id = setInterval(
 		function () {
-			if (typeof chrome !== 'undefined' &&
-				typeof chrome.app !== 'undefined' &&
-				typeof chrome.app.isInstalled !== 'undefined') {
+			if (typeof chrome !== 'undefined') {
 				chrome.storage.local.get('show_tap_buttons', function (value) {
 					show_buttons = value.show_tap_buttons;
 				});
@@ -781,9 +779,7 @@ $(function () {
 				$("#" + TAP_BUTTON_ID).remove();
 			}
 
-			if (typeof chrome !== 'undefined' &&
-				typeof chrome.app !== 'undefined' &&
-				typeof chrome.app.isInstalled !== 'undefined') {
+			if (typeof chrome !== 'undefined') {
 				chrome.storage.local.get('show_scrollbar', function (value) {
 					if (value.show_scrollbar) {
 						//scrollbar_display = "initial"
