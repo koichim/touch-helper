@@ -491,22 +491,22 @@ $(function () {
 		});
 	*/
 
-	var mouseRunning = False;
-	var touchRunning = False;
+	var mouseRunning = false;
+	var touchRunning = false;
 	$(window).bind("mousedown", MouseStart);
 	$(window).bind("mouseup", MouseLeave);
 	
 	function MouseStart(event){
 		if (event.button != 2) {return;}
 		// right button
-		mouseRunning = True;
+		mouseRunning = true;
 		TouchOrMouseStart(event);
 		$(window).bind("mousemove", TouchOrMouseMove);
 	}
 	function MouseLeave(event){
 		if (event.button != 2) {return;}
 		// right button
-		mouseRunning = False;
+		mouseRunning = false;
 		TouchOrMouseLeave(event);
 	}
 
@@ -514,12 +514,12 @@ $(function () {
 	$(window).bind("touchend", TouchLeave);
 
 	function TouchStart(event){
-		touchRunning = True;
+		touchRunning = true;
 		TouchOrMouseStart(event);
 		$(window).bind("touchmove", TouchOrMouseMove);
 	}
 	function TouchLeave(event){
-		touchRunning = False;
+		touchRunning = false;
 		TouchOrMouseLeave(event);
 	}
 
@@ -644,24 +644,29 @@ $(function () {
 		cur_link = "";
 	}
 
-
-	function get_position(e) {
-		var x, y;
+	function get_position_parent(e) {
 		if (typeof e.originalEvent === "undefined") {
 			if (typeof e.changedTouches === "undefined") {
-				// hammer event
-				x = e.changedPointers[0].pageX;
-				y = e.changedPointers[0].pageY;
+				// javascript mouse event
+				return e;
 			} else {
 				// javascript event
-				x = e.changedTouches[0].pageX;
-				y = e.changedTouches[0].pageY;
+				return e.changedTouches[0];
 			}
 		} else {
-			// jquery event
-			x = e.originalEvent.touches[0].pageX;
-			y = e.originalEvent.touches[0].pageY;
+			if (e.originalEvent.touches) {
+				return e.originalEvent.touches[0];
+			} else { // TouchEvent
+				return e.originalEvent;
+			}
 		}
+	}
+	function get_position(e) {
+		var x, y;
+		position_parent = get_position_parent(e);
+		x = position_parent.pageX;
+		y = position_parent.pageY;
+
 		x = Math.floor(x);
 		y = Math.floor(y);
 		var pos = { 'x': x, 'y': y };
@@ -669,21 +674,10 @@ $(function () {
 	}
 	function get_client_position(e) {
 		var x, y;
-		if (typeof e.originalEvent === "undefined") {
-			if (typeof e.changedTouches === "undefined") {
-				// hammer event
-				x = e.changedPointers[0].clientX;
-				y = e.changedPointers[0].clientY;
-			} else {
-				// javascript event
-				x = e.changedTouches[0].clientX;
-				y = e.changedTouches[0].clientY;
-			}
-		} else {
-			// jquery event
-			x = e.originalEvent.touches[0].clientX;
-			y = e.originalEvent.touches[0].clientY;
-		}
+		position_parent = get_position_parent(e);
+		x = position_parent.clientX;
+		y = position_parent.clientY;
+
 		x = Math.floor(x);
 		y = Math.floor(y);
 		var pos = { 'x': x, 'y': y };
