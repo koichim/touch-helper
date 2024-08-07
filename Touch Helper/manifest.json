@@ -11,7 +11,8 @@
 			"matches": ["<all_urls>"],
 			"match_about_blank": true,		
 			"js": ["jquery-2.1.3.min.js", "excanvas.js", "myscript.js"],
-			"run_at": "document_start"
+			"run_at": "document_start",
+			"all_frames": true
 		}
     ],
     "icons" : {
