@@ -12,7 +12,6 @@ $(function () {
 	var FIXED_SCROLL_MERGIN = 30;
 	var DEBUG = 0;
 
-	var show_buttons = true;
 	var show_scrollbar = true;
 	var scroll_support = true;
 	var scroll_element = null;
@@ -286,6 +285,9 @@ $(function () {
 			console.log("failed to create tap_buttons");
 			return;
 		}
+
+		set_scroll_element();  // used for scroll buttons
+
 		tap_buttons.id = TAP_BUTTON_ID;
 		tap_buttons.style.visibility = "visible";
 		tap_buttons.style.bottom = "5px";
@@ -779,21 +781,26 @@ $(function () {
 		function () {
 			if (window == window.parent) {
 				if (typeof chrome !== 'undefined') {
-					chrome.storage.local.get('show_tap_buttons', function (value) {
-						show_buttons = value.show_tap_buttons;
+					chrome.storage.local.get('show_tap_buttons').then((value) => {
+						var show_buttons = true;
+						if (value != {}) {
+							show_buttons = value.show_tap_buttons;
+						}
+						if (show_buttons && !document.getElementById(TAP_BUTTON_ID)) {
+							add_tap_buttons();
+						}
+						if (!show_buttons && document.getElementById(TAP_BUTTON_ID)) {
+							$("#" + TAP_BUTTON_ID).remove();
+						}
 					});
 				}
-				set_scroll_element();
-				if (show_buttons && !document.getElementById(TAP_BUTTON_ID)) {
-					add_tap_buttons();
-				}
-				if (!show_buttons && document.getElementById(TAP_BUTTON_ID)) {
-					$("#" + TAP_BUTTON_ID).remove();
-				}
-
 				if (typeof chrome !== 'undefined') {
-					chrome.storage.local.get('show_scrollbar', function (value) {
-						if (value.show_scrollbar) {
+					chrome.storage.local.get('show_scrollbar').then((value) => {
+						var show_scrollbar = true;
+						if (value != {}) {
+							show_scrollbar = value.show_scrollbar;
+						}
+						if (show_scrollbar) {
 							//scrollbar_display = "initial"
 							if ($("#masuda_scrollbar")[0]) {
 								$("#masuda_scrollbar").remove();

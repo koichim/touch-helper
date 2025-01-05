@@ -1,60 +1,40 @@
-// use contextMenu in "persistent":false background (event page)
-// ref https://qiita.com/MugeSo/items/e5307bda346c0bb8e22e
-var ContextMenus = new function () {
-    var items = {};
-    var callbacks = {};
-
-    this.setItems = function (aItems) {
-        aItems.forEach(function (item) {
-            callbacks[item.id] = item.onclick;
-            item.onclick = null;
-            items[item.id] = item;
-        });
-    };
-
-    this.create = function () {
-		chrome.storage.local.set({'show_tap_buttons': true}, function () {});
-        Object.keys(items).forEach(
-			function (key) {
-                chrome.contextMenus.create(items[key]);
-            }
-        );
-    };
-
-    chrome.contextMenus.onClicked.addListener(function (info, tab) {
-        callbacks[info.menuItemId](info, tab);
-    });
-};
-
-
-chrome.storage.local.get('show_tap_buttons', function (value) {
-	ContextMenus.setItems([
-		{
+function install_context_menu(){
+	chrome.storage.local.get().then((values) => {
+		if (values == {}){
+			// default values for new install
+			values = {"show_tap_buttons": true, "show_scrollbar": true}
+			chrome.storage.local.set(values, function () {});
+		}
+		chrome.contextMenus.create({
 			id: 'touch helper buttons',
 			title: 'show touch helper buttons',
 			type: 'checkbox',
-			checked: value.show_tap_buttons,
+			checked: values.show_tap_buttons,
 			contexts: ['all'],
-			onclick: show_hide_touch_helper_buttons
-		}
-	]);
-});
-chrome.storage.local.get('show_scrollbar', function (value) {
-	ContextMenus.setItems([
-		{
+		});
+		chrome.contextMenus.create({
 			id: 'touch helper scrollbar',
 			title: 'show scrollbar',
 			type: 'checkbox',
-			checked: value.show_scrollbar,
+			checked: values.show_scrollbar,
 			contexts: ['all'],
-			onclick: show_hide_scrollbar
+		});
+	});
+}
+function start_context_menu() {
+	chrome.contextMenus.onClicked.addListener((info, tab) => {
+		if (info.menuItemId == 'touch helper buttons'){
+			show_hide_touch_helper_buttons(info, tab)
+		} else if (info.menuItemId == 'touch helper scrollbar'){
+			show_hide_scrollbar(info, tab)
 		}
-	]);
-});
+	});
+}
 
+chrome.runtime.onInstalled.addListener(install_context_menu);
+//chrome.runtime.onStartup.addListener(start_context_menu);
+start_context_menu();
 
-chrome.runtime.onInstalled.addListener(ContextMenus.create);
-    
 function show_hide_touch_helper_buttons(info, tab){
     if (info.checked) {
 		chrome.storage.local.set({'show_tap_buttons': true}, function () {});
