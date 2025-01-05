@@ -4,7 +4,7 @@ $(function () {
 	var TAP_BUTTON_ID = "masuda_tap_buttons";
 	var GESTURE_INFO_ID = "masuda_gesture_info";
 	var TAP_BUTTON_ZINDEX = "2147483647";
-	var GESTURE_START_HOLD_OFF_TIME = 500; // in msec
+	var GESTURE_START_HOLD_OFF_TIME = 250; // in msec
 	var GESTURE_MOVE_THRESHOLD = 30;
 	var PATH_LINE_CSS_NAME = "masuda_path_line";
 	var PATH_LINE_WIDTH = 5;
